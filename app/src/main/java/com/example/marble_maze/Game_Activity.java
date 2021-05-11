@@ -1,10 +1,8 @@
-
 package com.example.marble_maze;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -14,15 +12,11 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Display;
 import android.view.View;
-import android.widget.Button;
 
 import java.util.Timer;
 import java.util.TimerTask;
-
-import static java.sql.DriverManager.println;
 
 public class Game_Activity extends AppCompatActivity implements SensorEventListener {
 
@@ -42,7 +36,7 @@ public class Game_Activity extends AppCompatActivity implements SensorEventListe
     public static boolean finish;
     //Timer
     public static int time;
-    public static boolean stopt;
+    public static boolean stop;
 
     private long lastUpdate;
     private SensorManager mSensorManager;
@@ -85,7 +79,7 @@ public class Game_Activity extends AppCompatActivity implements SensorEventListe
         VELOCITY = 5;
         finish = false;
         time = 0;
-        stopt = false;
+        stop = false;
 
     }
     //Sensors
@@ -120,12 +114,11 @@ public class Game_Activity extends AppCompatActivity implements SensorEventListe
             if(ay >= (left + right + 950)){
                 ay = left + right + 950;
             }
-
             //Check for Finish
             //canvas.drawRect(right-175, bottom-175, right, bottom, paint);
             if(ay >= (left + right + 930) && ax >= bottom-1175  ){
                 finish = true;
-                stopt = true;
+                stop = true;
             }
 
         }
@@ -175,10 +168,15 @@ public class Game_Activity extends AppCompatActivity implements SensorEventListe
                 paint.setTextSize(100);
                 canvas.drawText("Finish", (width/2)-200, height/3, paint);
                 canvas.drawText("Time Completed: " + String.valueOf(time), (width/2)-500, (height/3)+250, paint);
-                Intent intent = new Intent(Game_Activity.this, com.example.marble_maze.MainActivity.class);
-                startActivity(intent);
+                canvas.drawText("Will Redirect to Main Page", (width/2)-500, (height/3)+450, paint);
+                new Timer().schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        finish();
+                    }
+                }, 2000);
             }
-            if(!stopt) {
+            if(!stop) {
                 time += 1;
             }
             invalidate();
